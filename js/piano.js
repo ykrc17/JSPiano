@@ -1,5 +1,13 @@
 var set = new Set()
 var shiftDown = false
+var keyMap = []
+keyMap[81]=41
+keyMap[87]=42
+keyMap[69]=43
+keyMap[82]=44
+keyMap[84]=45
+keyMap[89]=46
+keyMap[85]=47
 
 document.onkeydown = function(e) {
   var audio = ""
@@ -13,13 +21,11 @@ document.onkeydown = function(e) {
   }
   // keyCode锁
   set.add(keyCode)
-  switch (keyCode) {
-    case 81:
-      audio = "41"
-      break;
-    default:
-      console.log("keyCode \"" + keyCode + "\" not supported")
-      return
+
+  audio=keyMap[keyCode]
+  if (audio == null) {
+    console.log("keyCode \"" + keyCode + "\" not supported")
+    return
   }
   if (shiftDown) {
     audio += "b"
