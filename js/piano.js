@@ -2,6 +2,24 @@ var keyLock = new Set()
 var shiftDown = false
 var keyMap = []
 
+keyMap[97] = 11
+keyMap[98] = 12
+keyMap[99] = 13
+keyMap[100] = 14
+keyMap[101] = 15
+keyMap[102] = 16
+keyMap[103] = 17
+keyMap[104] = 21
+
+keyMap[90] = 21
+keyMap[88] = 22
+keyMap[67] = 23
+keyMap[86] = 24
+keyMap[66] = 25
+keyMap[78] = 26
+keyMap[77] = 27
+keyMap[188] = 31
+
 keyMap[65] = 31
 keyMap[83] = 32
 keyMap[68] = 33
@@ -9,6 +27,7 @@ keyMap[70] = 34
 keyMap[71] = 35
 keyMap[72] = 36
 keyMap[74] = 37
+keyMap[75] = 41
 
 keyMap[81] = 41
 keyMap[87] = 42
@@ -17,6 +36,7 @@ keyMap[82] = 44
 keyMap[84] = 45
 keyMap[89] = 46
 keyMap[85] = 47
+keyMap[73] = 51
 var playerIndex = 0
 var playerCount = 5
 
