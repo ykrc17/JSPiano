@@ -37,6 +37,15 @@ keyMap[84] = 45
 keyMap[89] = 46
 keyMap[85] = 47
 keyMap[73] = 51
+
+keyMap[49] = 51
+keyMap[50] = 52
+keyMap[51] = 53
+keyMap[52] = 54
+keyMap[53] = 55
+keyMap[54] = 56
+keyMap[55] = 57
+keyMap[56] = 61
 var playerIndex = 0
 var playerCount = 5
 
