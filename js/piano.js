@@ -91,7 +91,6 @@ var timeout
 
 var updateLog = function(pitch) {
   log.currentLog += pitch
-  log.currentLog += ' '
   clearTimeout(timeout)
   timeout = setTimeout("pushHistoryLog()", 3000)
 }
