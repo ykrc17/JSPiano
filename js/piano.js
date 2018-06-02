@@ -78,8 +78,28 @@ document.onkeydown = function(e) {
     if (playerIndex >= playerCount) {
       playerIndex = 0
     }
+    // 打印
+    var pitch = keyMap[keyCode] % 10
+    if (shiftDown) {
+      pitch = '#' + pitch
+    }
+    updateLog(pitch)
   }
 };
+
+var timeout
+
+var updateLog = function(pitch) {
+  log.currentLog += pitch
+  log.currentLog += ' '
+  clearTimeout(timeout)
+  timeout = setTimeout("pushHistoryLog()", 3000)
+}
+
+var pushHistoryLog = function() {
+  log.historyLogs.unshift(log.currentLog)
+  log.currentLog = ''
+}
 
 document.onkeyup = function(e) {
   var keyCode = e.keyCode
@@ -88,3 +108,11 @@ document.onkeyup = function(e) {
     shiftDown = false
   }
 }
+
+var log = new Vue({
+  el: '#log',
+  data: {
+    currentLog: '',
+    historyLogs: []
+  }
+})
