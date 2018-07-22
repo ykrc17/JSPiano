@@ -53,8 +53,29 @@ bindKey([90, 88, 67, 86, 66, 78, 77, 188], 1)
 bindKey([65, 83, 68, 70, 71, 72, 74, 75], 2)
 bindKey([81, 87, 69, 82, 84, 89, 85, 73], 3)
 bindKey([49, 50, 51, 52, 53, 54, 55, 56], 4)
+
+class Player {
+  constructor(index) {
+    this.keyCode = ""
+    this.element = document.getElementById("player" + index)
+  }
+
+  play(keyCode, pitchSpec) {
+    this.keyCode = keyCode
+    this.element.src = "audio/" + pitchSpec.getFileName(shiftDown)
+    this.element.volume = 1
+    this.element.play()
+  }
+
+  stop() {
+    this.keyCode = ""
+    this.element.volume = .5
+  }
+}
+
 var playerIndex = 0
 var playerCount = 5
+var playerMap = []
 
 document.onkeydown = function(e) {
   var keyCode = e.keyCode
@@ -74,9 +95,13 @@ document.onkeydown = function(e) {
     return
   }
 
-  var element = document.getElementById("player" + playerIndex)
-  element.src = "audio/" + pitchSpec.getFileName(shiftDown)
-  element.play()
+  var player = playerMap[playerIndex]
+  if (player == null) {
+    player = new Player(playerIndex)
+    playerMap[playerIndex] = player
+  }
+  player.play(keyCode, pitchSpec)
+
   playerIndex++
   if (playerIndex >= playerCount) {
     playerIndex = 0
@@ -103,6 +128,19 @@ document.onkeyup = function(e) {
   keyLock.delete(keyCode)
   if (keyCode == 16) {
     shiftDown = false
+  }
+  // 音量调整
+  var playerIndex = -1
+  for (i in playerMap) {
+    player = playerMap[i]
+    if (player.keyCode == keyCode) {
+      playerIndex = i
+      break
+    }
+  }
+  console.log(playerIndex);
+  if (playerIndex >= 0) {
+    player.stop()
   }
 }
 
