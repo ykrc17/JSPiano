@@ -75,11 +75,13 @@ class Player {
     this.element.volume = 1
     this.stopping = false
     this.element.play()
+    refreshTimeout()
   }
 
   stop() {
     this.keyCode = ""
     this.stopping = true
+    refreshTimeout()
   }
 
   onUpdate() {
@@ -134,10 +136,13 @@ document.onkeydown = function(e) {
 
 var timeout
 
+var refreshTimeout = function() {
+  clearTimeout(timeout)
+  timeout = setTimeout("pushHistoryLog()", 1500)
+}
+
 var updateLog = function(pitch) {
   log.currentLog += pitch
-  clearTimeout(timeout)
-  timeout = setTimeout("pushHistoryLog()", 3000)
 }
 
 var pushHistoryLog = function() {
