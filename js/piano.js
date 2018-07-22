@@ -158,7 +158,7 @@ document.onkeyup = function(e) {
   }
 }
 
-setInterval("onUpdate()", 100)
+setInterval("onUpdate()", 50)
 var onUpdate = function() {
   for (i in playerMap) {
     var player = playerMap[i]
