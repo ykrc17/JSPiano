@@ -57,6 +57,7 @@ bindKey([49, 50, 51, 52, 53, 54, 55, 56], 4)
 class Player {
   constructor(index) {
     this.keyCode = ""
+    this.stopping = false
     this.element = document.getElementById("player" + index)
   }
 
@@ -64,12 +65,25 @@ class Player {
     this.keyCode = keyCode
     this.element.src = "audio/" + pitchSpec.getFileName(shiftDown)
     this.element.volume = 1
+    this.stopping = false
     this.element.play()
   }
 
   stop() {
     this.keyCode = ""
-    this.element.volume = .5
+    this.stopping = true
+  }
+
+  onUpdate() {
+    if (this.stopping) {
+      var volume = this.element.volume
+      volume -= 0.1
+      if (volume < 0) {
+        volume = 0
+        this.stopping = false
+      }
+      this.element.volume = volume
+    }
   }
 }
 
@@ -141,6 +155,14 @@ document.onkeyup = function(e) {
   console.log(playerIndex);
   if (playerIndex >= 0) {
     player.stop()
+  }
+}
+
+setInterval("onUpdate()", 100)
+var onUpdate = function() {
+  for (i in playerMap) {
+    var player = playerMap[i]
+    player.onUpdate()
   }
 }
 
