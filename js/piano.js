@@ -16,8 +16,12 @@ class PitchSpec {
     return this.value % 12
   }
 
-  getPitchName() {
-    return pitchName[this.getPitch()]
+  getPitchName(shiftDown) {
+    var pitch = this.getPitch()
+    if (shiftDown) {
+      pitch++
+    }
+    return pitchName[pitch]
   }
 
   getFileName(shiftDown) {
@@ -121,7 +125,7 @@ document.onkeydown = function(e) {
     playerIndex = 0
   }
   // 打印
-  updateLog(pitchSpec.getPitchName() + " ")
+  updateLog(pitchSpec.getPitchName(shiftDown) + " ")
 };
 
 var timeout
