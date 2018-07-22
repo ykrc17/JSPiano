@@ -8,16 +8,20 @@ class PitchSpec {
     this.value = value
   }
 
-  getGroup() {
-    return parseInt(this.value / 12)
+  getValue() {
+    return this.value + keySelecter.key
   }
 
-  getPitch() {
-    return this.value % 12
+  getGroup() {
+    return parseInt(this.getValue() / 12)
+  }
+
+  getPitch(real) {
+    return (real ? this.value : this.getValue()) % 12
   }
 
   getPitchName(shiftDown) {
-    var pitch = this.getPitch()
+    var pitch = this.getPitch(true)
     if (shiftDown) {
       pitch++
     }
@@ -156,7 +160,6 @@ document.onkeyup = function(e) {
       break
     }
   }
-  console.log(playerIndex);
   if (playerIndex >= 0) {
     player.stop()
   }

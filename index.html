@@ -6,6 +6,11 @@
 </head>
 
 <body>
+  <p id="key-selecter">
+    <button @click="down">-</button>
+    <span>{{keyName}}</span>
+    <button @click="up">+</button>
+  </p>
   <p>QWERTYUI 代表 CDEFGABC</p>
   <audio id='player0' hidden='true'></audio>
   <audio id='player1' hidden='true'></audio>
@@ -16,6 +21,7 @@
     <p>log: {{currentLog}}</p>
     <p v-for="historyLog in historyLogs">{{historyLog}}</p>
   </div>
+  <script src="js/key-selecter.js"></script>
   <script src="js/piano.js"></script>
 </body>
 
