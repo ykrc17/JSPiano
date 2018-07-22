@@ -1,56 +1,62 @@
 var keyLock = new Set()
 var shiftDown = false
+var pitchName = ['1', '#1', '2', '#2', '3', '4', '#4', '5', '#5', '6', '#6', '7']
 var keyMap = []
 
-keyMap[97] = 11
-keyMap[98] = 12
-keyMap[99] = 13
-keyMap[100] = 14
-keyMap[101] = 15
-keyMap[102] = 16
-keyMap[103] = 17
-keyMap[104] = 21
+class PitchSpec {
+  constructor(value) {
+    this.value = value
+  }
 
-keyMap[90] = 21
-keyMap[88] = 22
-keyMap[67] = 23
-keyMap[86] = 24
-keyMap[66] = 25
-keyMap[78] = 26
-keyMap[77] = 27
-keyMap[188] = 31
+  getGroup() {
+    return parseInt(this.value / 12)
+  }
 
-keyMap[65] = 31
-keyMap[83] = 32
-keyMap[68] = 33
-keyMap[70] = 34
-keyMap[71] = 35
-keyMap[72] = 36
-keyMap[74] = 37
-keyMap[75] = 41
+  getPitch() {
+    return this.value % 12
+  }
 
-keyMap[81] = 41
-keyMap[87] = 42
-keyMap[69] = 43
-keyMap[82] = 44
-keyMap[84] = 45
-keyMap[89] = 46
-keyMap[85] = 47
-keyMap[73] = 51
+  getPitchName() {
+    return pitchName[this.getPitch()]
+  }
 
-keyMap[49] = 51
-keyMap[50] = 52
-keyMap[51] = 53
-keyMap[52] = 54
-keyMap[53] = 55
-keyMap[54] = 56
-keyMap[55] = 57
-keyMap[56] = 61
+  getFileName(shiftDown) {
+    var group = this.getGroup()
+    var pitch = this.getPitch()
+    if (shiftDown) {
+      pitch++
+      if (pitch >= 12) {
+        group++
+        pitch -= 12
+      }
+    }
+    return group + (pitch < 10 ? "0" : "") + pitch + ".mp3"
+  }
+}
+
+var bindKey = function(arr, group) {
+  var pitch = group * 12
+  for (i in arr) {
+    var key = arr[i]
+    keyMap[key] = new PitchSpec(pitch)
+    pitch += 2
+    if (i == 2 || i == 6) {
+      pitch--
+    }
+  }
+}
+
+// 0 1 2 3 4 5 6 7 8 9 10 11
+// C   D   E F   G   A    B
+bindKey([97, 98, 99, 100, 101, 102, 103, 104], 0)
+bindKey([90, 88, 67, 86, 66, 78, 77, 188], 1)
+bindKey([65, 83, 68, 70, 71, 72, 74, 75], 2)
+bindKey([81, 87, 69, 82, 84, 89, 85, 73], 3)
+bindKey([49, 50, 51, 52, 53, 54, 55, 56], 4)
 var playerIndex = 0
 var playerCount = 5
 
 document.onkeydown = function(e) {
-  var audio = ""
   var keyCode = e.keyCode
   if (keyCode == 16) {
     shiftDown = true
@@ -62,29 +68,21 @@ document.onkeydown = function(e) {
   // keyCode锁
   keyLock.add(keyCode)
 
-  audio = keyMap[keyCode]
-  if (audio == null) {
+  var pitchSpec = keyMap[keyCode]
+  if (pitchSpec == null) {
     console.log("keyCode \"" + keyCode + "\" not supported")
     return
   }
-  if (shiftDown) {
-    audio += "b"
+
+  var element = document.getElementById("player" + playerIndex)
+  element.src = "audio/" + pitchSpec.getFileName(shiftDown)
+  element.play()
+  playerIndex++
+  if (playerIndex >= playerCount) {
+    playerIndex = 0
   }
-  if (audio != "") {
-    var element = document.getElementById("player" + playerIndex)
-    element.src = "audio/" + audio + ".mp3"
-    element.play()
-    playerIndex++
-    if (playerIndex >= playerCount) {
-      playerIndex = 0
-    }
-    // 打印
-    var pitch = keyMap[keyCode] % 10
-    if (shiftDown) {
-      pitch = '#' + pitch
-    }
-    updateLog(pitch)
-  }
+  // 打印
+  updateLog(pitchSpec.getPitchName() + " ")
 };
 
 var timeout
