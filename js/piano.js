@@ -191,7 +191,6 @@ document.onkeyup = function(e) {
     player = playerMap[i]
     if (player.keyCode == keyCode) {
       player.stop()
-      break
     }
   }
 }
