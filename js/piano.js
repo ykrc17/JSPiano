@@ -4,9 +4,10 @@ var pitchName = ['1', '#1', '2', '#2', '3', '4', '#4', '5', '#5', '6', '#6', '7'
 var keyMap = []
 
 class PitchSpec {
-  constructor(keyCode, value) {
+  constructor(keyCode, value, volume = 1) {
     this.keyCode = keyCode
     this.value = value
+    this.volume = volume
   }
 
   getValue() {
@@ -64,7 +65,7 @@ class ChordSpec {
     this.pitchSpecs = []
     for (i in pitches) {
       var pitchFileName = pitches[i]
-      this.pitchSpecs.push(new PitchSpec(keyCode, parseInt(pitchFileName / 100) * 12 + pitchFileName % 100))
+      this.pitchSpecs.push(new PitchSpec(keyCode, parseInt(pitchFileName / 100) * 12 + pitchFileName % 100, 0.8))
     }
   }
 
@@ -118,7 +119,7 @@ class Player {
   play(keyCode, pitchSpec) {
     this.keyCode = keyCode
     this.element.src = "audio/" + pitchSpec.getFileName(shiftDown)
-    this.element.volume = 1
+    this.element.volume = pitchSpec.volume
     this.stopping = false
     this.element.play()
     refreshTimeout()
