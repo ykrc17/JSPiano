@@ -4,7 +4,8 @@ var pitchName = ['1', '#1', '2', '#2', '3', '4', '#4', '5', '#5', '6', '#6', '7'
 var keyMap = []
 
 class PitchSpec {
-  constructor(value) {
+  constructor(keyCode, value) {
+    this.keyCode = keyCode
     this.value = value
   }
 
@@ -40,13 +41,45 @@ class PitchSpec {
     }
     return group + (pitch < 10 ? "0" : "") + pitch + ".mp3"
   }
+
+  play() {
+    var player = playerMap[playerIndex]
+    if (player == null) {
+      player = new Player(playerIndex)
+      playerMap[playerIndex] = player
+    }
+    player.play(this.keyCode, this)
+
+    playerIndex++
+    if (playerIndex >= playerCount) {
+      playerIndex = 0
+    }
+    // 打印
+    updateLog(this.getPitchName(shiftDown) + " ")
+  }
+}
+
+class ChordSpec {
+  constructor(keyCode, pitches) {
+    this.pitchSpecs = []
+    for (i in pitches) {
+      var pitchFileName = pitches[i]
+      this.pitchSpecs.push(new PitchSpec(keyCode, parseInt(pitchFileName / 100) * 12 + pitchFileName % 100))
+    }
+  }
+
+  play() {
+    for (i in this.pitchSpecs) {
+      this.pitchSpecs[i].play()
+    }
+  }
 }
 
 var bindKey = function(arr, group) {
   var pitch = group * 12
   for (i in arr) {
     var key = arr[i]
-    keyMap[key] = new PitchSpec(pitch)
+    keyMap[key] = new PitchSpec(key, pitch)
     pitch += 2
     if (i == 2 || i == 6) {
       pitch--
@@ -54,13 +87,26 @@ var bindKey = function(arr, group) {
   }
 }
 
+var bindChord = function(key, pitches) {
+  keyMap[key] = new ChordSpec(key, pitches)
+}
+
 // 0 1 2 3 4 5 6 7 8 9 10 11
 // C   D   E F   G   A    B
-bindKey([97, 98, 99, 100, 101, 102, 103, 104], 0)
+// bindKey([97, 98, 99, 100, 101, 102, 103, 104], 0)
 bindKey([90, 88, 67, 86, 66, 78, 77, 188], 1)
 bindKey([65, 83, 68, 70, 71, 72, 74, 75], 2)
 bindKey([81, 87, 69, 82, 84, 89, 85, 73], 3)
 bindKey([49, 50, 51, 52, 53, 54, 55, 56], 4)
+
+bindChord(96, [11, 102, 105])
+bindChord(97, [100, 104, 107])
+bindChord(98, [102, 105, 109])
+bindChord(99, [104, 107, 11])
+bindChord(100, [105, 109, 100])
+bindChord(101, [107, 11, 102])
+bindChord(102, [109, 100, 104])
+// bindChord(103, [011, 102, 105])
 
 class Player {
   constructor(index) {
@@ -119,19 +165,7 @@ document.onkeydown = function(e) {
     return
   }
 
-  var player = playerMap[playerIndex]
-  if (player == null) {
-    player = new Player(playerIndex)
-    playerMap[playerIndex] = player
-  }
-  player.play(keyCode, pitchSpec)
-
-  playerIndex++
-  if (playerIndex >= playerCount) {
-    playerIndex = 0
-  }
-  // 打印
-  updateLog(pitchSpec.getPitchName(shiftDown) + " ")
+  pitchSpec.play()
 };
 
 var timeout
@@ -157,16 +191,12 @@ document.onkeyup = function(e) {
     shiftDown = false
   }
   // 音量调整
-  var playerIndex = -1
   for (i in playerMap) {
     player = playerMap[i]
     if (player.keyCode == keyCode) {
-      playerIndex = i
+      player.stop()
       break
     }
-  }
-  if (playerIndex >= 0) {
-    player.stop()
   }
 }
 
