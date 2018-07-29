@@ -56,7 +56,7 @@ class PitchSpec {
       playerIndex = 0
     }
     // 打印
-    updateLog(this.getPitchName(shiftDown) + " ")
+    logger.currentLog += (this.getPitchName(shiftDown) + " ")
   }
 }
 
@@ -173,16 +173,11 @@ var timeout
 
 var refreshTimeout = function() {
   clearTimeout(timeout)
-  timeout = setTimeout("pushHistoryLog()", 1500)
+  timeout = setTimeout("logger.nextLine()", 1500)
 }
 
 var updateLog = function(pitch) {
   log.currentLog += pitch
-}
-
-var pushHistoryLog = function() {
-  log.historyLogs.unshift(log.currentLog)
-  log.currentLog = ''
 }
 
 document.onkeyup = function(e) {
@@ -209,10 +204,19 @@ var onUpdate = function() {
   }
 }
 
-var log = new Vue({
+var logger = new Vue({
   el: '#log',
   data: {
     currentLog: '',
     historyLogs: []
+  },
+  methods: {
+    nextLine: function() {
+      this.historyLogs.unshift(this.currentLog)
+      this.currentLog = ''
+      while (this.historyLogs.length > 20) {
+        this.historyLogs.pop()
+      }
+    }
   }
 })
