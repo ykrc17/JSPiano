@@ -145,7 +145,7 @@ class Player {
 }
 
 var playerIndex = 0
-var playerCount = 5
+var playerCount = 10
 var playerMap = []
 
 document.onkeydown = function(e) {
